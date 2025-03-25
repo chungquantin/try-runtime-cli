@@ -48,6 +48,16 @@ jobs:
           rustup component add rust-src
           rustup target add ${{ matrix.platform.target }} wasm32-unknown-unknown
 
+      # Install packages
+      - name: Install packages (Linux)
+        if: contains(matrix.platform.target, 'linux')
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y --fix-missing protobuf-compiler ${{ contains(matrix.platform.target, 'aarch64') && 'crossbuild-essential-arm64' || '' }}
+      - name: Install packages (macOS)
+        if: contains(matrix.platform.target, 'apple')
+        run: brew install protobuf
+
       - name: Install deps for musl build
         if: matrix.platform.os == 'ubuntu-22.04'
         run: |
