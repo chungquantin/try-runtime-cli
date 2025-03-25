@@ -43,24 +43,13 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Add x86_64-apple-darwin target
-        if: matrix.platform.target == 'x86_64-apple-darwin'
-        run: rustup target add x86_64-apple-darwin
-
-      - name: Add x86_64-unknown-linux-musl target
-        if: matrix.platform.target == 'x86_64-unknown-linux-musl'
-        run: rustup target add x86_64-unknown-linux-musl
-
-      - name: Add aarch64-apple-darwin target
-        if: matrix.platform.target == 'aarch64-apple-darwin'
-        run: rustup target add aarch64-apple-darwin
-
-      - name: Add aarch64-unknown-linux-gnu target
-        if: matrix.platform.target == 'aarch64-unknown-linux-gnu'
-        run: rustup target add aarch64-unknown-linux-gnu
+      - name: Set Rust version
+        run: |
+          rustup component add rust-src
+          rustup target add ${{ matrix.platform.target }} wasm32-unknown-unknown
 
       - name: Install deps for musl build
-        if: matrix.platform.os == 'ubuntu-latest'
+        if: matrix.platform.os == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y musl-tools clang build-essential curl llvm-dev libclang-dev linux-headers-generic libsnappy-dev liblz4-dev libzstd-dev libgflags-dev zlib1g-dev libbz2-dev
